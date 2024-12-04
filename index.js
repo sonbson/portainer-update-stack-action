@@ -17,7 +17,7 @@ async function run() {
     let stack_file = await axios({ method: 'get', url: `${url}/api/stacks/${stack}/file`, headers: { 'X-API-Key': api_key } })
     let stackContent = stack_file.data.StackFileContent
     if(tag != ""){
-      stackContent = stackContent.replaceAll(/(image:\s[a-z.\/-]+:[a-z]+[-\s]?)([a-z]*)/, "$1"+ tag)
+      stackContent = stackContent.replaceAll(/(image:\s[a-z.\/-]+:[a-z]+[-\s]?)([a-z]*)/g, "$1"+ tag)
     }
       
 
