@@ -20,7 +20,7 @@ async function run() {
       stackContent = stackContent.replaceAll(/(image:\s[a-z.\/-]+:[a-z]+[-\s]?)([a-z]*)/g, "$1"+ tag)
     }
       
-
+    core.info(stackContent);
     core.info(`update stack & repull image ...`);
     let update = await axios({
       method: 'put',
