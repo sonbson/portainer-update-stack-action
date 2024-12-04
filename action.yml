@@ -18,9 +18,13 @@ inputs:
     required: true
     default: 1
   portainer-tag:
-    description: 'Portainer Stack Id'
+    description: 'Portainer Tag Id'
     required: false
-    default: 1
+    default: ''
+  portainer-registry:
+    description: 'Portainer Registry'
+    required: false
+    default: ''
 outputs:
   status:
     description: 'Portainer Update Stack Status'
