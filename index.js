@@ -9,6 +9,7 @@ async function run() {
     const endpoint = parseInt(core.getInput('portainer-endpoint', {required: true}));
     const stack = parseInt(core.getInput('portainer-stack', {required: true}));
     const tag = core.getInput('portainer-tag', {required: false});
+    const registry = core.getInput('portainer-registry', {required: false});
 
     core.info(`get stack env ... ${url}/api/stacks/${stack}`);
     let stack_data = await axios({ method: 'get', url: `${url}/api/stacks/${stack}`, headers: { 'X-API-Key': api_key } })
@@ -16,8 +17,9 @@ async function run() {
     core.info(`get stack file ... ${url}/api/stacks/${stack}/file`);
     let stack_file = await axios({ method: 'get', url: `${url}/api/stacks/${stack}/file`, headers: { 'X-API-Key': api_key } })
     let stackContent = stack_file.data.StackFileContent
-    if(tag != ""){
-      stackContent = stackContent.replaceAll(/(image:\s[a-z.\/-]+:[a-z]+[-\s]?)([a-z]*)/g, "$1"+ tag)
+    if(tag != "" && registry != ""){
+      var regexStr = new RegExp(String.raw`(image:\s${registry}[a-z.\/-]+:[a-z]+)(-?)(\s?)([a-z]*)`, "g");
+      stackContent = stackContent.replaceAll(regexStr, "$1-"+ tag)
     }
       
     core.info(stackContent);
