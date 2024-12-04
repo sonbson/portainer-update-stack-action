@@ -8,12 +8,18 @@ async function run() {
     const api_key = core.getInput('portainer-api-key', {required: true});
     const endpoint = parseInt(core.getInput('portainer-endpoint', {required: true}));
     const stack = parseInt(core.getInput('portainer-stack', {required: true}));
+    const tag = core.getInput('portainer-tag', {required: false});
 
     core.info(`get stack env ... ${url}/api/stacks/${stack}`);
     let stack_data = await axios({ method: 'get', url: `${url}/api/stacks/${stack}`, headers: { 'X-API-Key': api_key } })
 
     core.info(`get stack file ... ${url}/api/stacks/${stack}/file`);
     let stack_file = await axios({ method: 'get', url: `${url}/api/stacks/${stack}/file`, headers: { 'X-API-Key': api_key } })
+    let stackContent = stack_file.data.StackFileContent
+    if(tag != ""){
+      stackContent = stackContent.replaceAll(/(image:\s[a-z.\/-]+:[a-z]+-)([a-z]+)/, "$1"+ tag)
+    }
+      
 
     core.info(`update stack & repull image ...`);
     let update = await axios({
@@ -21,7 +27,7 @@ async function run() {
       url: `${url}/api/stacks/${stack}?endpointId=${endpoint}`,
       headers: { 'X-API-Key': api_key, 'Content-Type': 'application/json' },
       data: JSON.stringify({
-        "StackFileContent": stack_file.data.StackFileContent,
+        "StackFileContent": stackContent,
         "Env": stack_data.data.Env,
         "Prune": false,
         "PullImage": true
