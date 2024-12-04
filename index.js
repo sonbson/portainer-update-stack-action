@@ -9,10 +9,10 @@ async function run() {
     const endpoint = parseInt(core.getInput('portainer-endpoint', {required: true}));
     const stack = parseInt(core.getInput('portainer-stack', {required: true}));
 
-    core.info(`get stack env ...`);
+    core.info(`get stack env ... ${url}/api/stacks/${stack}`);
     let stack_data = await axios({ method: 'get', url: `${url}/api/stacks/${stack}`, headers: { 'X-API-Key': api_key } })
 
-    core.info(`get stack file ...`);
+    core.info(`get stack file ... ${url}/api/stacks/${stack}/file`);
     let stack_file = await axios({ method: 'get', url: `${url}/api/stacks/${stack}/file`, headers: { 'X-API-Key': api_key } })
 
     core.info(`update stack & repull image ...`);
@@ -30,6 +30,8 @@ async function run() {
 
     core.setOutput('status', update.status);
   } catch (error) {
+    core.info(`Failed`);
+    core.info(error.message);
     core.setFailed(error.message);
   }
 }
